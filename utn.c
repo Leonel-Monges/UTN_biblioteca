@@ -8,11 +8,14 @@
 #include <stdlib.h>
 #include "utn.h"
 
+static int getInt(int* pResultado);
+static int esNumerica(char* cadena);
+
 /**
  * @fn int utn_getInt(int*, char*, char*, int, int, int)
  * @brief Solicita un número entero al usuario y lo valida.
  *
- * @param pResultado: Puntero a variable donde se escribirá
+ * @param pResultado: Puntero a entero donde se escribirá
  * 		  			  el valor ingresado en el caso de ser correcto.
  * @param mensaje: Puntero a cadena de caracteres con mensaje
  * 				   a imprimir antes de pedirle al usuario datos por consola.
@@ -36,7 +39,7 @@ int utn_getInt(int *pResultado, char *mensaje, char *mensajeError,
 		do
 		{
 			printf("%s", mensaje);
-			if(scanf("%d", &bufferInt) == 1)
+			if(getInt(&bufferInt) == 1)
 			{
 				if(bufferInt >= minimo && bufferInt <= maximo)
 				{
@@ -60,7 +63,7 @@ int utn_getInt(int *pResultado, char *mensaje, char *mensajeError,
  * @fn int utn_getFloat(float*, char*, char*, int, int, int)
  * @brief Solicita un número entero al usuario y lo valida.
  *
- * @param pResultado: Puntero a variable donde se escribirá
+ * @param pResultado: Puntero a flotante donde se escribirá
  * 		  			  el valor ingresado en el caso de ser correcto.
  * @param mensaje: Puntero a cadena de caracteres con mensaje
  * 				   a imprimir antes de pedirle al usuario datos por consola.
@@ -106,10 +109,10 @@ int utn_getFloat(float *pResultado, char *mensaje, char *mensajeError,
 
 /**
  * @fn int utn_getPorcentaje(float*, int, float, int)
- * @brief Realiza el incremento/decremento de un valor,
+ * @brief Realiza el incremento/decremento de un valor numerico,
  * 		  ingresando el porcentaje solicitado.
  *
- * @param pResultado: Puntero a float a retornar.
+ * @param pResultado: Puntero a flotante, con el valor a setear.
  * @param valorIngresado: Valor original a emplear.
  * @param porcentaje: Valor del porcentaje a emplear.
  * @param opcion: 0 para Incremento || 1 para Decremento.
@@ -143,7 +146,7 @@ int utn_getPorcentaje(float* pResultado, float valorIngresado, float porcentaje,
  * @brief Realiza la operacion matematica de 2 valores numericos,
  *		  contando con la seleccion de dicha operacion que el usuario estipule.
  *
- * @param pResultado: Puntero a flotante a setear, con el valor de la operacion realizada.
+ * @param pResultado: Puntero a flotante, con el valor de la operacion realizada a setear.
  * @param numero1: Primer valor numerico a pasar para dicha operacion.
  * @param numero2: Segundo valor numerico a pasar para dicha operacion.
  * @param operacion: Opciones a elegir para cada operacion (1-4)
@@ -151,7 +154,7 @@ int utn_getPorcentaje(float* pResultado, float valorIngresado, float porcentaje,
  *		  			2. - (Resta)
  *		  			3. * (Multiplicacion)
  *		  			4. / (Division)
- * @return 0 == OK || -1 == ERROR!
+ * @return 0 = OK || -1 = ERROR!
  */
 int utn_calcularOperacion(float* pResultado, float numero1, float numero2, int opcionOperacion)
 {
@@ -186,4 +189,59 @@ int utn_calcularOperacion(float* pResultado, float numero1, float numero2, int o
 	}
 
 	return resultado;
+}
+
+/**
+ * @fn int getInt(int*)
+ * @brief Obtiene el dato como una cadena de caracteres, para luego
+ * 	      validarlo y parsear/formatear el dato a una variable entera.
+ *
+ * @param pResultado: Puntero a entero, con el valor a setear.
+ * @return 1 == OK
+ */
+static int getInt(int* pResultado)
+{
+	int retorno = -1;
+	char buffer[64];
+
+	scanf("%s",buffer);
+	if(esNumerica(buffer)) // esNumerica(buffer) == 1
+	{
+		*pResultado = atoi(buffer);
+		retorno = 1;
+	}
+
+	return retorno;
+}
+
+/**
+ * @fn int esNumerica(char*)
+ * @brief Recibe una cadena de caracteres y devuelve 1
+ * 		  en el caso de que el texto este compuesto solo por números.
+ *
+ * @param cadena: Cadena de carateres a recorrer.
+ * @return  1 == OK
+ */
+static int esNumerica(char* cadena)
+{
+	int retorno = -1;
+	int i = 0;
+
+	if(cadena != NULL)
+	{
+			while(cadena[i] != '\0')
+			{
+				if(cadena[i] < '0' || cadena[i] > '9')
+				{
+					break;
+				}
+				i++;
+			}
+			if(cadena[i] == '\0')
+			{
+				retorno = 1;
+			}
+	}
+
+	return retorno;
 }
