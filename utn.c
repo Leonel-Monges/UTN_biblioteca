@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "utn.h"
 
 static int getInt(int* pResultado);
@@ -204,7 +205,9 @@ static int getInt(int* pResultado)
 	int retorno = -1;
 	char buffer[64];
 
-	scanf("%s",buffer);
+	fgets(buffer, sizeof(buffer), stdin);
+	buffer[strlen(buffer) - 1] = '\0'; // \n = \0
+
 	if(esNumerica(buffer)) // esNumerica(buffer) == 1
 	{
 		*pResultado = atoi(buffer);
